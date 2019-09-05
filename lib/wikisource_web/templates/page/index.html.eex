@@ -1,0 +1,41 @@
+<div>
+  <%= form_tag("/search", method: :get) do
+    content_tag(:div, class: "b_searchboxForm") do
+      [tag(:input, class: "b_searchbox", type: "text", name: "query", value: @query),
+      content_tag(:div, id: "sb_go_par") do
+        tag(:input, type: "submit", class: "b_searchboxSubmit", value: gettext("Search"))
+      end
+      ]
+    end
+  end %>
+  
+  <%=
+   case @page do
+    %{entries: hits, total_entries: _total} -> 
+    content_tag(:div, id: "hits") do 
+      Enum.map hits, fn hit ->
+        content_tag(:div, class: "hit") do
+        ["name", "info", "preface", "text"] |> Enum.map(
+          fn field ->
+            if field == "name" do
+              link to: raw Map.fetch!(hit, "url") do
+                content_tag(:h4) do
+                  raw Map.fetch!(hit, field)
+                end
+              end
+            else
+              content_tag(:p) do
+                raw Map.fetch!(hit, field)
+              end
+            end
+          end)
+        end
+      end
+    end
+   %{total: 0} -> tag(:div, id: "no-hits")
+   nil -> tag(:div, id: "no-hits")
+   end
+  %>
+<%= if @page != nil do pagination_links nil, @page, [], query: @query, _utf8: "✓" end%>
+</div>
+

@@ -1,0 +1,54 @@
+/* This file is for your main application css. */
+
+em {
+    color: #ff0000
+}
+
+.b_searchboxForm {
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+}
+
+.b_searchbox {
+    width: 90%;
+    margin: 5px 0 1px 20px;
+    padding: 0 10px 0 0;
+    border: 0;
+    max-height: 30px;
+    outline: none;
+    box-sizing: content-box;
+    height: 35px;
+    vertical-align: top;
+    border-radius: 6px;
+}
+
+.b_searchbox {
+    font-size: 16px;
+}
+
+#sb_go_par {
+    display: inline-block;
+}
+
+.b_searchboxSubmit {
+    height: 40px;
+    width: 40px;
+    border-width: 0;
+    border-style: solid;
+    margin: 0;
+    text-indent: -99em;
+    background-image: url("https://cn.bing.com/sa/simg/SharedSpriteDesktop_2x_040919.png");
+    background-position: -242px 0;
+    -webkit-transform: scale(.5);
+    -ms-transform: scale(.5);
+    transform: scale(.5);
+}
+
+.b_searchboxForm .b_searchboxSubmit {
+    color: #000000;
+    background-color: #fff;
+    border-color: #fff;
+}

@@ -1,0 +1,9 @@
+<div id="headerContainer" class="ws-noexport noprint" style="">
+<table style="width:100%; margin-top:0px;border:1px solid #93A6C0; background-color: #F9F9F9; text-align:center;">
+<%= raw @info %>
+</table>
+<table style="width:100%; background:#F8FCFF; font-size:small; border-bottom:1px solid #93A6C0">
+<%= raw @preface %>
+</table>
+</div>
+<%= raw @book %>
