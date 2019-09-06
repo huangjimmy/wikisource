@@ -64,8 +64,6 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
       end
     end)
 
-    IO.inspect(should_arr)
-
     case Elastix.Search.search(elastic_url(), "wikisource", [""], %{
       "from" => from,
       "size" => size,
