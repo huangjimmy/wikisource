@@ -15,20 +15,23 @@ defmodule WikisourceWeb.PageController do
       "from" => from,
       "size" => size,
       "query" => %{
-                "multi_match" => %{
-                    "query" =>    query,
-                    "fields" => [ "name", "info", "preface", "text" ],
-                    "operator" => "and"
-                  }
-            },
-            "highlight" => %{
-                "fields" => %{
-                    "name" => %{},
-                    "info" => %{},
-                    "preface" => %{},
-                    "text" => %{},
-                }
-            }
+        "bool" => %{
+          "should" => [
+            %{"match_phrase" => %{ "name" => %{"query" => query, "analyzer" => "ik_zh_max"}}},
+            %{"match_phrase" => %{ "info" => %{"query" => query, "analyzer" => "ik_zh_max"} }},
+            %{"match_phrase" => %{ "preface" => %{"query" => query, "analyzer" => "ik_zh_max"} }},
+            %{"match_phrase" => %{ "text" => %{"query" => query, "analyzer" => "ik_zh_max"} }}
+          ]
+          }
+      },
+      "highlight" => %{
+          "fields" => %{
+              "name" => %{},
+              "info" => %{},
+              "preface" => %{},
+              "text" => %{},
+          }
+      }
     }) do
       {:ok, %HTTPoison.Response{ body: %{ "hits" => %{ "hits" => hits , "total" => %{"value" => total }}} }} ->
         render conn, "index.html", query: query, page: %Scrivener.Page{ entries:

@@ -56,27 +56,30 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     from = Map.get(args, :from, 0)
     size = Map.get(args, :size, 10)
 
-    match = %{}
+    should_arr = [{"name", name}, {"info", info}, {"preface", preface}, {"text", text}] |> Enum.reduce([],
+    fn it, acc ->
+      case it do
+        {_, ""} -> acc
+        {field, query} -> acc ++ [%{"match_phrase" => %{ field => %{ "query" =>  query, "analyzer" => "ik_zh_max"} } }]
+      end
+    end)
 
-    match = if name == "" do match else Map.put(match, "name", name) end
-    match = if info == "" do match else Map.put(match, "info", info) end
-    match = if preface == "" do match else Map.put(match, "preface", preface) end
-    match = if text == "" do match else Map.put(match, "text", text) end
+    IO.inspect(should_arr)
 
     case Elastix.Search.search(elastic_url(), "wikisource", [""], %{
       "from" => from,
       "size" => size,
       "query" => %{
-                "match_phrase" => match
-            },
-            "highlight" => %{
-                "fields" => %{
-                    "name" => %{},
-                    "info" => %{},
-                    "preface" => %{},
-                    "text" => %{},
-                }
-            }
+          "bool" => %{"must" => should_arr}
+      },
+      "highlight" => %{
+          "fields" => %{
+              "name" => %{},
+              "info" => %{},
+              "preface" => %{},
+              "text" => %{},
+          }
+      }
     }) do
       {:ok, %HTTPoison.Response{ body: %{ "hits" => %{ "hits" => hits , "total" => %{"value" => total }}} }} ->
         urls = hits |> Enum.map(fn hit -> hit |> Map.get("_source") |> Map.get("url", "") end)
