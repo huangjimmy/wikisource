@@ -60,7 +60,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     fn it, acc ->
       case it do
         {_, ""} -> acc
-        {field, query} -> acc ++ [%{"match_phrase" => %{ field => %{ "query" =>  query, "analyzer" => "ik_zh_max"} } }]
+        {field, query} -> [%{"match_phrase" => %{ field => %{ "query" =>  query, "analyzer" => "ik_zh_max"} } }] ++ acc
       end
     end)
 

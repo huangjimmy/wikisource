@@ -1,7 +1,9 @@
 defmodule WikisourceWeb.Schema.BookTypes do
   use Absinthe.Schema.Notation
 
-  alias WikisourceWeb.{Data, Resolvers}
+  import Absinthe.Resolution.Helpers, only: [dataloader: 2, dataloader: 3]
+
+  alias WikisourceWeb.{DataSource, Resolvers}
 
   object :book do
     field :id, :id
@@ -14,6 +16,9 @@ defmodule WikisourceWeb.Schema.BookTypes do
 
     field :info_html, :string
     field :preface_html, :string
+
+    field :book, :book, resolve: dataloader(DataSource, :book)
+    field :chapters, list_of(:book), resolve: dataloader(DataSource, :chapters, [])
   end
 
   object :books do
