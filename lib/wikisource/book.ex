@@ -16,7 +16,7 @@ defmodule Wikisource.Book do
     field :preface_html, :string
 
     belongs_to :book, Book, foreign_key: :parent_id
-    has_many :chapters, Book
+    has_many :chapters, Book, foreign_key: :parent_id
 
     timestamps()
   end
