@@ -19,8 +19,8 @@ defmodule WikisourceWeb.PageController do
           "should" => [
             %{"match_phrase" => %{ "name" => %{"query" => query, "analyzer" => "ik_zh_max"}}},
             %{"match_phrase" => %{ "info" => %{"query" => query, "analyzer" => "ik_zh_max"} }},
-            %{"match_phrase" => %{ "preface" => %{"query" => query, "analyzer" => "ik_zh_max"} }},
-            %{"match_phrase" => %{ "text" => %{"query" => query, "analyzer" => "ik_zh_max"} }}
+            %{"match_phrase" => %{ "preface" => %{"query" => query, "analyzer" => "ik_zh_max", "slop" => 10} }},
+            %{"match_phrase" => %{ "text" => %{"query" => query, "analyzer" => "ik_zh_max", "slop" => 20} }}
           ]
           }
       },
