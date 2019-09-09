@@ -18,7 +18,12 @@ defmodule WikisourceWeb.Schema.BookTypes do
     field :preface_html, :string
 
     field :book, :book, resolve: dataloader(DataSource, :book)
-    field :chapters, list_of(:book), resolve: dataloader(DataSource, :chapters, [])
+    field :chapters, list_of(:book) do
+      arg(:from, non_null(:integer))
+      arg(:size, non_null(:integer))
+      resolve(dataloader(DataSource, :chapters, args: %{chapters: true}))
+      # resolve(&Resolvers.BookResolver.chapters/3)
+    end
   end
 
   object :books do
@@ -36,7 +41,15 @@ defmodule WikisourceWeb.Schema.BookTypes do
       resolve(&Resolvers.BookResolver.get/3)
     end
 
-    @desc "Get a list of books by fuzzy search"
+    @desc "Get a list of books who belongs to no parent"
+    field :list_book, :books do
+      arg(:from, :integer)
+      arg(:size, :integer)
+      arg(:parent, :integer)
+      resolve(&Resolvers.BookResolver.list/3)
+    end
+
+    @desc "Get a list of books by full text search"
     field :search_books, :books do
       arg(:query, non_null(:string))
       arg(:from, :integer)
@@ -44,7 +57,7 @@ defmodule WikisourceWeb.Schema.BookTypes do
       resolve(&Resolvers.BookResolver.search/3)
     end
 
-    @desc "Get a list of books by matching fields"
+    @desc "search books by matching fields"
     field :filter_books, :books do
       arg(:name, :string)
       arg(:info, :string)

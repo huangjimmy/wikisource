@@ -8,9 +8,14 @@ defmodule WikisourceWeb.DataSource do
   end
 
   def query(queryable, params) do
-    case Map.get(params, :order_by) do
-      nil -> queryable
-      order_by -> from record in queryable, order_by: ^order_by
+    IO.inspect(queryable)
+    IO.inspect(params)
+    case params do
+      %{order_by: order_by, from: from, size: size} -> from record in queryable, order_by: ^order_by, offset: ^from, limit: ^size
+      %{from: from, size: size} -> from record in queryable, offset: ^from, limit: ^size
+      %{order_by: order_by, from: from} -> from record in queryable, order_by: ^order_by, offset: ^from, limit: 10
+      %{order_by: order_by} -> from record in queryable, order_by: ^order_by, offset: 0, limit: 10
+      %{} -> queryable
     end
   end
 end

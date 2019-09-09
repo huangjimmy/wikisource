@@ -9,6 +9,33 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     end
   end
 
+  def chapters(parent, args, _resolutions) do
+
+    from = Map.get(args, :from, 0)
+    size = Map.get(args, :size, 10)
+    parent_id = parent.id
+
+    count_query = from b in Book, select: b, where: b.parent_id == ^parent_id
+    # total = Repo.aggregate(count_query, :count, :id)
+    books = Repo.all(from b in Book, select: b, order_by: :name, offset: ^from, limit: ^size, where: b.parent_id == ^parent_id)
+    # {:ok, %{query: "", from: from, size: size, total: total, books: books }}
+    {:ok, books}
+  end
+
+  def list(_parent, args, _resolutions) do
+
+    parent = Map.get(args, :parent, 0)
+    from = Map.get(args, :from, 0)
+    size = Map.get(args, :size, 10)
+
+    {total, books} = if parent <= 0 do
+      {Repo.aggregate(Book, :count, :id), Repo.all(from b in Book, select: b, where: is_nil(b.parent_id), offset: ^from, limit: ^size)}
+    else
+      {Repo.aggregate(from(b in Book, [select: b, where: b.parent_id == ^parent]), :count, :id), Repo.all(from b in Book, select: b, where: b.parent_id == ^parent, offset: ^from, limit: ^size, order_by: :name)}
+    end
+    {:ok, %{query: "", from: from, size: size, total: total, books: books }}
+  end
+
   def search(_parent, args, _resolutions) do
     query = Map.get(args, :query, "")
     from = Map.get(args, :from, 0)
