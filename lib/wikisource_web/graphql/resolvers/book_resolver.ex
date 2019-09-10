@@ -11,8 +11,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
   def chapters(parent, args, _resolutions) do
 
-    from = Map.get(args, :from, 0)
-    size = Map.get(args, :size, 10)
+    from = Map.get(args, :offset, 0)
+    size = Map.get(args, :first, 10)
     parent_id = parent.id
 
     count_query = from b in Book, select: b, where: b.parent_id == ^parent_id
@@ -25,8 +25,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   def list(_parent, args, _resolutions) do
 
     parent = Map.get(args, :parent, 0)
-    from = Map.get(args, :from, 0)
-    size = Map.get(args, :size, 10)
+    from = Map.get(args, :offset, 0)
+    size = Map.get(args, :first, 10)
 
     {total, books} = if parent <= 0 do
       {Repo.aggregate(Book, :count, :id), Repo.all(from b in Book, select: b, where: is_nil(b.parent_id), offset: ^from, limit: ^size)}
@@ -38,8 +38,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
   def search(_parent, args, _resolutions) do
     query = Map.get(args, :query, "")
-    from = Map.get(args, :from, 0)
-    size = Map.get(args, :size, 10)
+    from = Map.get(args, :offset, 0)
+    size = Map.get(args, :first, 10)
 
     case Elastix.Search.search(elastic_url(), "wikisource", [""], %{
       "from" => from,
@@ -80,8 +80,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     preface = Map.get(args, :preface, "")
     text = Map.get(args, :text, "")
 
-    from = Map.get(args, :from, 0)
-    size = Map.get(args, :size, 10)
+    from = Map.get(args, :offset, 0)
+    size = Map.get(args, :first, 10)
 
     should_arr = [{"name", name}, {"info", info}, {"preface", preface}, {"text", text}] |> Enum.reduce([],
     fn it, acc ->

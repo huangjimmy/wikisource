@@ -19,8 +19,8 @@ defmodule WikisourceWeb.Schema.BookTypes do
 
     field :book, :book, resolve: dataloader(DataSource, :book)
     field :chapters, list_of(:book) do
-      arg(:from, non_null(:integer))
-      arg(:size, non_null(:integer))
+      arg(:offset, non_null(:integer))
+      arg(:first, non_null(:integer))
       resolve(dataloader(DataSource, :chapters, args: %{chapters: true}))
       # resolve(&Resolvers.BookResolver.chapters/3)
     end
@@ -28,8 +28,8 @@ defmodule WikisourceWeb.Schema.BookTypes do
 
   object :books do
     field :query, :string
-    field :from, :integer
-    field :size, :integer
+    field :offset, :integer
+    field :first, :integer
     field :total, :integer
     field :books, list_of(:book)
   end
@@ -43,8 +43,8 @@ defmodule WikisourceWeb.Schema.BookTypes do
 
     @desc "Get a list of books who belongs to no parent"
     field :list_book, :books do
-      arg(:from, :integer)
-      arg(:size, :integer)
+      arg(:offset, :integer)
+      arg(:first, :integer)
       arg(:parent, :integer)
       resolve(&Resolvers.BookResolver.list/3)
     end
@@ -52,8 +52,8 @@ defmodule WikisourceWeb.Schema.BookTypes do
     @desc "Get a list of books by full text search"
     field :search_books, :books do
       arg(:query, non_null(:string))
-      arg(:from, :integer)
-      arg(:size, :integer)
+      arg(:offset, :integer)
+      arg(:first, :integer)
       resolve(&Resolvers.BookResolver.search/3)
     end
 
@@ -63,8 +63,8 @@ defmodule WikisourceWeb.Schema.BookTypes do
       arg(:info, :string)
       arg(:preface, :string)
       arg(:text, :string)
-      arg(:from, :integer)
-      arg(:size, :integer)
+      arg(:offset, :integer)
+      arg(:first, :integer)
       resolve(&Resolvers.BookResolver.filter/3)
     end
   end
