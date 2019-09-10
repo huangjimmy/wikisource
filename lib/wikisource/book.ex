@@ -5,6 +5,7 @@ defmodule Wikisource.Book do
   alias Wikisource.Book
 
   schema "books" do
+    field :chapter_number, :integer, virtual: true
     field :html, :string
     field :info, :string
     field :name, :string
