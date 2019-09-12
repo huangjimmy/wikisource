@@ -12,7 +12,8 @@ defmodule WikisourceWeb.DataSource do
       %{chapters: true, offset: offset, first: first} ->
         last = offset + first
         query = from r in queryable, select: r, select_merge: %{chapter_number: row_number() |> over(partition_by: r.parent_id, order_by: r.name)}
-        from r in subquery(query), select: %Wikisource.Book{id: r.id, name: r.name, info: r.info, preface: r.preface, info_html: r.info_html, preface_html: r.preface_html}, where: r.chapter_number >= ^offset and r.chapter_number < ^last
+        # from r in subquery(query), select: %Wikisource.Book{id: r.id, name: r.name, info: r.info, preface: r.preface, info_html: r.info_html, preface_html: r.preface_html}, where: r.chapter_number >= ^offset and r.chapter_number < ^last
+        from r in subquery(query), select: r, where: r.chapter_number >= ^offset and r.chapter_number < ^last
       %{order_by: order_by, offset: from, first: size} -> from record in queryable, order_by: ^order_by, offset: ^from, limit: ^size
       %{offset: from, first: size} -> from record in queryable, offset: ^from, limit: ^size
       %{order_by: order_by, offset: from} -> from record in queryable, order_by: ^order_by, offset: ^from, limit: 10

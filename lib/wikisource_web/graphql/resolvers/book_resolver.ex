@@ -1,5 +1,6 @@
 defmodule WikisourceWeb.Resolvers.BookResolver do
   import Ecto.Query
+  import WikisourceWeb.PageController, only: [fetch_field: 2]
   alias Wikisource.{Book, Repo}
 
   def get(_parent, args, _resolutions) do
@@ -61,13 +62,32 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
             }
     }) do
       {:ok, %HTTPoison.Response{ body: %{ "hits" => %{ "hits" => hits , "total" => %{"value" => total }}} }} ->
-        urls = hits |> Enum.map(fn hit -> hit |> Map.get("_source") |> Map.get("url", "") end)
+
+        book_table = :ets.new(:book_table, [:set, :protected, :named_table])
+
+        urls = hits |> Enum.map(fn hit ->
+          url = hit |> Map.get("_source") |> Map.get("url", "")
+          :ets.insert(book_table, {url, hit})
+          url
+        end)
+
         books = Repo.all(from b in Book, where: b.url in ^urls, select: b)
         books = urls |> Enum.map(fn url ->
-          Enum.find(books, fn book ->
+          book = Enum.find(books, fn book ->
             book.url == url
           end)
+
+          [{_url, hit} | _ ] = :ets.lookup(book_table, url)
+          book = Map.put(book, :text_highlight, fetch_field(hit, "text"))
+          book = Map.put(book, :name_highlight, fetch_field(hit, "name"))
+          book = Map.put(book, :info_highlight, fetch_field(hit, "info"))
+          book = Map.put(book, :preface_highlight, fetch_field(hit, "preface"))
+
+          book
         end)
+
+        :ets.delete(book_table)
+
         {:ok, %{query: query, from: from, size: size, total: total, books: books }}
       _ -> {:ok, %{query: query, from: from, size: size, total: 0, books: []}}
     end
@@ -107,13 +127,31 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
       }
     }) do
       {:ok, %HTTPoison.Response{ body: %{ "hits" => %{ "hits" => hits , "total" => %{"value" => total }}} }} ->
-        urls = hits |> Enum.map(fn hit -> hit |> Map.get("_source") |> Map.get("url", "") end)
+
+        book_table = :ets.new(:book_table, [:set, :protected, :named_table])
+
+        urls = hits |> Enum.map(fn hit ->
+          url = hit |> Map.get("_source") |> Map.get("url", "")
+          :ets.insert(book_table, {url, hit})
+          url
+        end)
         books = Repo.all(from b in Book, where: b.url in ^urls, select: b)
         books = urls |> Enum.map(fn url ->
-          Enum.find(books, fn book ->
+          book = Enum.find(books, fn book ->
             book.url == url
           end)
+
+          [{_url, hit} | _ ] = :ets.lookup(book_table, url)
+          book = Map.put(book, :text_highlight, fetch_field(hit, "text"))
+          book = Map.put(book, :name_highlight, fetch_field(hit, "name"))
+          book = Map.put(book, :info_highlight, fetch_field(hit, "info"))
+          book = Map.put(book, :preface_highlight, fetch_field(hit, "preface"))
+
+          book
         end)
+
+        :ets.delete(book_table)
+
         {:ok, %{query: "", from: from, size: size, total: total, books: books }}
       _ -> {:ok, %{query: "", from: from, size: size, total: 0, books: []}}
     end
