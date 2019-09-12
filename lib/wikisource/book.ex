@@ -19,6 +19,11 @@ defmodule Wikisource.Book do
     belongs_to :book, Book, foreign_key: :parent_id
     has_many :chapters, Book, foreign_key: :parent_id
 
+    field :info_highlight, :string, virtual: true
+    field :name_highlight, :string, virtual: true
+    field :preface_highlight, :string, virtual: true
+    field :text_highlight, :string, virtual: true
+
     timestamps()
   end
 

@@ -24,6 +24,16 @@ defmodule WikisourceWeb.Schema.BookTypes do
       resolve(dataloader(DataSource, :chapters, args: %{chapters: true}))
       # resolve(&Resolvers.BookResolver.chapters/3)
     end
+
+    @desc "highlighted text in info field when there are some search matches in info field"
+    field :info_highlight, :string
+    @desc "highlighted text in name field when there are some search matches in name field"
+    field :name_highlight, :string
+    @desc "highlighted text in preface field when there are some search matches in preface field"
+    field :preface_highlight, :string
+    @desc "highlighted text in text field when there are some search matches in text field"
+    field :text_highlight, :string
+
   end
 
   object :books do
