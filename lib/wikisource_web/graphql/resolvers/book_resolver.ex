@@ -15,7 +15,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     size = Map.get(args, :first, 10)
     parent_id = parent.id
 
-    count_query = from b in Book, select: b, where: b.parent_id == ^parent_id
+    # count_query = from b in Book, select: b, where: b.parent_id == ^parent_id
     # total = Repo.aggregate(count_query, :count, :id)
     books = Repo.all(from b in Book, select: b, order_by: :name, offset: ^from, limit: ^size, where: b.parent_id == ^parent_id)
     # {:ok, %{query: "", from: from, size: size, total: total, books: books }}
