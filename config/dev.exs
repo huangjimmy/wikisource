@@ -37,7 +37,8 @@ config :wikisource, WikisourceWeb.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/wikisource_web/views/.*(ex)$},
-      ~r{lib/wikisource_web/templates/.*(eex)$}
+      ~r{lib/wikisource_web/templates/.*(eex)$},
+      ~r{lib/wikisource_web/live/.*(ex)$}
     ]
   ]
 

@@ -1,0 +1,63 @@
+
+
+<%= f = form_for @changeset, "#", [phx_change: :validate, phx_submit: :search] %>
+<div class="b_searchboxForm">
+    <%= text_input f, :query, [class: "b_searchbox"] %>
+    <div id="sb_go_par">
+   <%= submit "", [class: "b_searchboxSubmit"] %>
+    </div>
+</div>
+</form>
+
+<%=
+   case @page_content do
+    %{entries: hits, total_entries: _total} -> 
+    content_tag(:div, id: "hits") do 
+      Enum.map hits, fn hit ->
+        content_tag(:div, class: "hit") do
+        ["name", "info", "preface", "text"] |> Enum.map(
+          fn field ->
+            if field == "name" do
+              link to: raw Map.fetch!(hit, "url") do
+                content_tag(:h4) do
+                  raw Map.fetch!(hit, field)
+                end
+              end
+            else
+              content_tag(:p) do
+                raw Map.fetch!(hit, field)
+              end
+            end
+          end)
+        end
+      end
+    end
+   %{total: 0} -> tag(:div, id: "no-hits")
+   nil -> tag(:div, id: "no-hits")
+   end
+  %>
+
+<%= if @page_content != nil do
+    content_tag(:ul, class: "pagination") do
+        %{page_number: page_number} = @page_content
+        raw_pagination_links(@page_content) |> Enum.map(fn {text, next_page} ->
+            if page_number == next_page do 
+                content_tag(:li, class: "active") do
+                    content_tag(:span) do
+                     raw("#{text}")
+                    end
+                end
+            else
+                content_tag(:li) do
+                    case text do
+                        :ellipsis -> content_tag(:span) do
+                            "..."
+                            end
+                        _ ->
+                        live_link raw("#{text}"), to: Routes.live_path(@socket, WikisourceWeb.HomeView, page: next_page)
+                    end
+                end
+            end
+        end)
+    end
+end %>

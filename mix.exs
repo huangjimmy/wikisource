@@ -52,7 +52,8 @@ defmodule Wikisource.Mixfile do
       {:absinthe_phoenix, "~> 1.4.0"},
       {:ecto_sql, "~> 3.0"},
       {:scrivener_ecto, "~> 2.0"},
-      {:scrivener_html, "~> 1.8"}
+      {:scrivener_html, "~> 1.8"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"}
     ]
   end
 

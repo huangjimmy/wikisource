@@ -40,6 +40,10 @@ defmodule WikisourceWeb do
       import WikisourceWeb.Router.Helpers
       import WikisourceWeb.ErrorHelpers
       import WikisourceWeb.Gettext
+
+      import Phoenix.LiveView, only: [live_render: 2, live_render: 3, live_link: 2]
+
+      alias WikisourceWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -48,6 +52,9 @@ defmodule WikisourceWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
+
+      alias WikisourceWeb.Router.Helpers, as: Routes
     end
   end
 

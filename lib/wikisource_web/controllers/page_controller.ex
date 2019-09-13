@@ -1,12 +1,15 @@
 defmodule WikisourceWeb.PageController do
   use WikisourceWeb, :controller
 
-  def search(conn, params ) do
+  alias Phoenix.LiveView
+
+  def search( params ) do
     { from, size, query } = case params do
       %{"query" => query, "from" => from, "size" => size } -> {from, size, query}
       %{"query" => query, "from" => from } -> {from, 10, query}
       %{"query" => query, "page" => page, "page_size" => size } -> { (page-1)*size , size, query}
-      %{"query" => query, "page" => page } -> { (String.to_integer(page)-1)*10 , 10, query}
+      %{"query" => query, "page" => page } when is_integer(page) -> { (page-1)*10 , 10, query}
+      %{"query" => query, "page" => page } when is_bitstring(page) -> { (String.to_integer(page)-1)*10 , 10, query}
       %{"query" => query } -> {0, 10, query}
       _ -> {0, 10, ""}
     end
@@ -34,7 +37,7 @@ defmodule WikisourceWeb.PageController do
       }
     }) do
       {:ok, %HTTPoison.Response{ body: %{ "hits" => %{ "hits" => hits , "total" => %{"value" => total }}} }} ->
-        render conn, "index.html", query: query, page: %Scrivener.Page{ entries:
+        {query, %Scrivener.Page{ entries:
           (Enum.map(hits, fn hit ->
             %{"name" => fetch_field(hit, "name"),
             "info" => fetch_field(hit, "info"),
@@ -42,9 +45,15 @@ defmodule WikisourceWeb.PageController do
             "text" => fetch_field(hit, "text"),
             "url" => fetch_field(hit, "url")}
           end)),  page_number: round(from/size+1), page_size: size, total_entries: total, total_pages: round(total/size)}
+        }
       _ ->
-        render conn, "index.html", query: query, page: nil
+        {query, nil}
     end
+  end
+
+  def search(conn, params ) do
+    { query, page } = search(params)
+    render conn, "index.html", query: query, page: page
   end
 
   def fetch_field(hit, field) do
@@ -61,6 +70,10 @@ defmodule WikisourceWeb.PageController do
 
   def index(conn, _params) do
     render conn, "index.html", query: "", page: nil
+  end
+
+  def index_live(conn, _param) do
+    LiveView.Controller.live_render(conn, WikisourceWeb.HomeView, session: %{})
   end
 
   def elastic_url do
