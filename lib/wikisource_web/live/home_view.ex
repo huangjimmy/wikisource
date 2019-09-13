@@ -34,7 +34,6 @@ defmodule WikisourceWeb.HomeView do
     %{ assigns: %{ page: page, query: old_query_string } } = socket
     %{"search_query" => %{ "query" => query_string } } = value
 
-
     page = if old_query_string == query_string do
       page
     else
@@ -53,6 +52,9 @@ defmodule WikisourceWeb.HomeView do
   def handle_event("page", value, socket) do
     query = %Wikisource.SearchQuery{}
     %{ assigns: %{ query: query_string } } = socket
+
+    query_string = value |> Map.get("search_query", %{}) |> Map.get("query", query_string)
+
     %{"search_query" => %{ "page" => page } } = value
     params = %{ "query" => query_string, "page" => page }
 
@@ -60,26 +62,24 @@ defmodule WikisourceWeb.HomeView do
       "" -> {query_string, nil}
       _ -> WikisourceWeb.PageController.search(params)
     end
-    {:noreply, assign(socket, page_content: page_content, page: page, changeset: Wikisource.SearchQuery.changeset(query, %{query: query_string}))}
+    {:noreply, assign(socket, page_content: page_content, page: page, query: query_string, changeset: Wikisource.SearchQuery.changeset(query, %{query: query_string}))}
   end
 
-  def handle_event("validate", value, socket) do
-
-    # %{"search_query" =>  params } = value
-
-    # do the deploy process
-    {:noreply, assign(socket, dummy: true)}
+  def handle_event("validate", _value, socket) do
+    {:noreply, socket}
   end
 
-  @spec handle_params(any, any, any) :: {:noreply, any}
   def handle_params(params, _uri, socket) do
-    case params do
-      %{"page" => "" } ->
+
+    %{ assigns: %{ page: _page, query: old_query_string } } = socket
+
+    query = Map.get(params, "query", old_query_string)
+    page = Map.get(params, "page", 1)
+    case {query, page} do
+      { "", _ } ->
         {:noreply, socket}
-      %{"page" => page } ->
-        handle_event("page", %{"search_query" => %{ "page" => page } }, socket)
       _ ->
-        {:noreply, socket}
+        handle_event("page", %{"search_query" => %{ "page" => page, "query" => query } }, socket)
     end
   end
 
