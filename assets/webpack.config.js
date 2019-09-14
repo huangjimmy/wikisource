@@ -6,6 +6,7 @@ var env = process.env.MIX_ENV || 'dev'
 var isProduction = (env === 'prod')
 
 module.exports = {
+  mode: isProduction?"production":"development",
   entry: {
     'app': ['./js/app.js', './css/app.css', './css/phoenix.css']
   },
