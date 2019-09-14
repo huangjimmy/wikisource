@@ -1,4 +1,14 @@
 
+<div id="spinner_container" style="<%= if @loading, do: "", else: "display:none;"  %>">
+    <div class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+    </div>
+</div>
+
 
 <%= f = form_for @changeset, "#", [phx_change: :validate, phx_submit: :search] %>
 <div class="b_searchboxForm">
@@ -54,7 +64,7 @@
                             "..."
                             end
                         _ ->
-                        live_link raw("#{text}"), to: Routes.live_path(@socket, WikisourceWeb.HomeView, page: next_page)
+                        if @loading, do: content_tag(:span, raw("#{text}")), else: live_link(raw("#{text}"), to: Routes.live_path(@socket, WikisourceWeb.HomeView, page: next_page))
                     end
                 end
             end
