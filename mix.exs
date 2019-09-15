@@ -20,7 +20,7 @@ defmodule Wikisource.Mixfile do
   def application do
     [
       mod: {Wikisource.Application, []},
-      extra_applications: [:logger, :runtime_tools, :scrivener_html]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
