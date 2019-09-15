@@ -43,7 +43,6 @@ defmodule Wikisource.Mixfile do
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
       {:httpoison, "~> 1.5"},
-      {:jason, "~> 1.0"},
       {:poolboy, "~> 1.5.1"},
       {:elastix, ">= 0.0.0"},
       {:absinthe, "~> 1.4.0"},
