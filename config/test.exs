@@ -10,7 +10,7 @@ config :wikisource, WikisourceWeb.Endpoint,
 config :logger, level: :warn
 
 config :elastix,
-  url: "http://elasticsearc:9200"
+  url: System.get_env("WIKISOURCE_ELASTIC_URL", "http://elasticsearc:9200")
 
 # Configure your database
 config :wikisource, Wikisource.Repo,

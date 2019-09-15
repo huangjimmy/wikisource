@@ -50,7 +50,7 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 config :elastix,
-  url: "http://localhost:9200"
+  url: System.get_env("WIKISOURCE_ELASTIC_URL", "http://localhost:9200")
 
 # Configure your database
 config :wikisource, Wikisource.Repo,
