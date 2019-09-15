@@ -159,6 +159,6 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   end
 
   def elastic_url do
-    Application.get_env(:elastix, "url", "http://localhost:9200")
+    Application.get_env(:elastix, :url, "http://localhost:9200")
   end
 end
