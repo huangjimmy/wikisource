@@ -8,6 +8,15 @@ defmodule Wikisource do
   """
   def elastic do
     quote do
+      @doc """
+        Get elastic url from application config environment
+        see config/{dev, test, prod}.exs and search for the following
+
+        config :elastix,
+          url:
+
+        Please note that the configuration will first try to get url from system environment by System.get_env("WIKISOURCE_ELASTIC_URL", "")
+      """
       def elastic_url do
         Application.get_env(:elastix, :url, "http://localhost:9200")
       end
