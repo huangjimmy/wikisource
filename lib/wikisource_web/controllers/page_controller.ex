@@ -1,6 +1,6 @@
 defmodule WikisourceWeb.PageController do
   use WikisourceWeb, :controller
-
+  use Wikisource, :elastic
   alias Phoenix.LiveView
 
   def search( params ) do
@@ -74,10 +74,6 @@ defmodule WikisourceWeb.PageController do
 
   def index_live(conn, _param) do
     LiveView.Controller.live_render(conn, WikisourceWeb.HomeView, session: %{})
-  end
-
-  def elastic_url do
-    Application.get_env(:elastix, :url, "http://localhost:9200")
   end
 
 end

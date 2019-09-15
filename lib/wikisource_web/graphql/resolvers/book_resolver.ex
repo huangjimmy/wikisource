@@ -3,6 +3,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   import WikisourceWeb.PageController, only: [fetch_field: 2]
   alias Wikisource.{Book, Repo}
 
+  use Wikisource, :elastic
+
   def get(_parent, args, _resolutions) do
     case Repo.get(Book, args[:id]) do
       nil -> {:error, "Not found"}
@@ -158,7 +160,4 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
   end
 
-  def elastic_url do
-    Application.get_env(:elastix, :url, "http://localhost:9200")
-  end
 end
