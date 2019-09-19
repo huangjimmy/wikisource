@@ -54,6 +54,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     query = Map.get(args, :query, "")
     from = Map.get(args, :offset, 0)
     size = Map.get(args, :first, 10)
+    size = if size > 20, do: 20, else: size
 
     case Elastix.Search.search(elastic_url(), "wikisource", [""], %{
       "from" => from,
@@ -101,8 +102,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
         :ets.delete(book_table)
 
-        {:ok, %{query: query, from: from, size: size, total: total, books: books }}
-      _ -> {:ok, %{query: query, from: from, size: size, total: 0, books: []}}
+        {:ok, %{query: query, offset: from, first: size, total: total, books: books }}
+      _ -> {:ok, %{query: query, offset: from, first: size, total: 0, books: []}}
     end
 
   end
@@ -119,6 +120,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
     from = Map.get(args, :offset, 0)
     size = Map.get(args, :first, 10)
+    size = if size > 20, do: 20, else: size
 
     should_arr = [{"name", name}, {"info", info}, {"preface", preface}, {"text", text}] |> Enum.reduce([],
     fn it, acc ->
@@ -169,8 +171,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
         :ets.delete(book_table)
 
-        {:ok, %{query: "", from: from, size: size, total: total, books: books }}
-      _ -> {:ok, %{query: "", from: from, size: size, total: 0, books: []}}
+        {:ok, %{query: "", offset: from, first: size, total: total, books: books }}
+      _ -> {:ok, %{query: "", offset: from, first: size, total: 0, books: []}}
     end
 
   end
