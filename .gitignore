@@ -27,3 +27,4 @@ npm-debug.log
 # variables.
 /config/*.secret.exs
 assets/static/files
+Mnesia.*

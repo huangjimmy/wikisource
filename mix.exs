@@ -5,7 +5,7 @@ defmodule Wikisource.Mixfile do
     [
       app: :wikisource,
       version: "0.0.1",
-      elixir: "~> 1.4",
+      elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -43,6 +43,7 @@ defmodule Wikisource.Mixfile do
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
       {:httpoison, "~> 1.5"},
+      {:jason, "~> 1.0"},
       {:poolboy, "~> 1.5.1"},
       {:elastix, ">= 0.0.0"},
       {:absinthe, "~> 1.4.0"},
@@ -52,6 +53,9 @@ defmodule Wikisource.Mixfile do
       {:ecto_sql, "~> 3.0"},
       {:scrivener_ecto, "~> 2.0"},
       {:scrivener_html, "~> 1.8"},
+      {:uuid, "~> 1.1"},
+      {:mnesiac, "~> 0.3"},
+      {:libcluster, "~> 3.1"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"}
     ]
   end
