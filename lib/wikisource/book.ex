@@ -1,7 +1,8 @@
 defmodule Wikisource.Book do
   use Ecto.Schema
-  import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime]
 
+  import Ecto.Changeset
   alias Wikisource.Book
 
   schema "books" do
