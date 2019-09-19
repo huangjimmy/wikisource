@@ -5,6 +5,26 @@ defmodule WikisourceWeb.Schema.BookTypes do
 
   alias WikisourceWeb.{DataSource, Resolvers}
 
+  object :session do
+    field :session_id, :string
+  end
+
+  object :session_mutations do
+    @desc "create a new session"
+    field :create_session, :session do
+      arg(:device_id, non_null(:string))
+      arg(:device_type, non_null(:string))
+      arg(:device_desc, non_null(:string))
+      resolve(&Resolvers.SessionResolver.create/3)
+    end
+
+    @desc "invalidate session"
+    field :delete_session, :session do
+      arg(:session_id, non_null(:string))
+      resolve(&Resolvers.SessionResolver.delete/3)
+    end
+  end
+
   object :book do
     field :id, :id
     field :html, :string

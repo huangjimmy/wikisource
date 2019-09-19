@@ -10,6 +10,10 @@ defmodule WikisourceWeb.Schema do
     import_fields(:book_queries)
   end
 
+  mutation do
+    import_fields(:session_mutations)
+  end
+
   def context(ctx) do
     loader =
       Dataloader.new()

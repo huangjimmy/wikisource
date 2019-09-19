@@ -5,15 +5,18 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
   use Wikisource, :elastic
 
-  def get(_parent, args, _resolutions) do
+  def get(_parent, args, %{context: %{session_id: _}} = _resolutions) do
     case Repo.get(Book, args[:id]) do
       nil -> {:error, "Not found"}
       book -> {:ok, book}
     end
   end
 
-  def chapters(parent, args, _resolutions) do
+  def get(_parent, _args, _resolutions) do
+    {:error, "unauthorized"}
+  end
 
+  def chapters(parent, args, %{context: %{session_id: _}} = _resolutions) do
     from = Map.get(args, :offset, 0)
     size = Map.get(args, :first, 10)
     parent_id = parent.id
@@ -25,7 +28,11 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     {:ok, books}
   end
 
-  def list(_parent, args, _resolutions) do
+  def chapters(_parent, _args, _resolutions) do
+    {:error, "unauthorized"}
+  end
+
+  def list(_parent, args, %{context: %{session_id: _}} =_resolutions) do
 
     parent = Map.get(args, :parent, 0)
     from = Map.get(args, :offset, 0)
@@ -39,7 +46,11 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
     {:ok, %{query: "", from: from, size: size, total: total, books: books }}
   end
 
-  def search(_parent, args, _resolutions) do
+  def list(_parent, _args, _resolutions) do
+    {:error, "unauthorized"}
+  end
+
+  def search(_parent, args, %{context: %{session_id: _}} = _resolutions) do
     query = Map.get(args, :query, "")
     from = Map.get(args, :offset, 0)
     size = Map.get(args, :first, 10)
@@ -96,7 +107,11 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
   end
 
-  def filter(_parent, args, _resolutions) do
+  def search(_parent, _args, _resolutions) do
+    {:error, "unauthorized"}
+  end
+
+  def filter(_parent, args, %{context: %{session_id: _}} = _resolutions) do
     name = Map.get(args, :name, "")
     info = Map.get(args, :info, "")
     preface = Map.get(args, :preface, "")
@@ -158,6 +173,10 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
       _ -> {:ok, %{query: "", from: from, size: size, total: 0, books: []}}
     end
 
+  end
+
+  def filter(_parent, _args, _resolutions) do
+    {:error, "unauthorized"}
   end
 
 end
