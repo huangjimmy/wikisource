@@ -11,6 +11,7 @@ defmodule WikisourceWeb.Router do
   end
 
   pipeline :api do
+    plug WikisourceWeb.Context
     plug :accepts, ["json"]
   end
 
