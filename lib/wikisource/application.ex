@@ -12,8 +12,17 @@ defmodule Wikisource.Application do
       supervisor(Wikisource.Repo, []),
       # Start the endpoint when the application starts
       supervisor(WikisourceWeb.Endpoint, []),
+      supervisor(Wikisource.SessionStore, []),
+      {Cluster.Supervisor, [Application.fetch_env!(:libcluster, :topologies), [name: Wikisource.ClusterSupervisor]]},
       # Start your own worker by calling: Wikisource.Worker.start_link(arg1, arg2, arg3)
       # worker(Wikisource.Worker, [arg1, arg2, arg3]),
+      {
+        Mnesiac.Supervisor,
+        [
+          Node.list(),
+          [name: Wikisource.MnesiacSupervisor]
+        ]
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
