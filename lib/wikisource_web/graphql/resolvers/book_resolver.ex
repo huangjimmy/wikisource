@@ -5,6 +5,8 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
 
   use Wikisource, :elastic
 
+  @invalid_session_error %{message: "unauthorized", error_code: 401}
+
   def get(_parent, args, %{context: %{session_id: _}} = _resolutions) do
     case Repo.get(Book, args[:id]) do
       nil -> {:error, "Not found"}
@@ -13,7 +15,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   end
 
   def get(_parent, _args, _resolutions) do
-    {:error, "unauthorized"}
+    {:error, @invalid_session_error}
   end
 
   def chapters(parent, args, %{context: %{session_id: _}} = _resolutions) do
@@ -29,7 +31,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   end
 
   def chapters(_parent, _args, _resolutions) do
-    {:error, "unauthorized"}
+    {:error, @invalid_session_error}
   end
 
   def list(_parent, args, %{context: %{session_id: _}} =_resolutions) do
@@ -47,7 +49,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   end
 
   def list(_parent, _args, _resolutions) do
-    {:error, "unauthorized"}
+    {:error, @invalid_session_error}
   end
 
   def search(_parent, args, %{context: %{session_id: _}} = _resolutions) do
@@ -109,7 +111,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   end
 
   def search(_parent, _args, _resolutions) do
-    {:error, "unauthorized"}
+    {:error, @invalid_session_error}
   end
 
   def filter(_parent, args, %{context: %{session_id: _}} = _resolutions) do
@@ -178,7 +180,7 @@ defmodule WikisourceWeb.Resolvers.BookResolver do
   end
 
   def filter(_parent, _args, _resolutions) do
-    {:error, "unauthorized"}
+    {:error, @invalid_session_error}
   end
 
 end

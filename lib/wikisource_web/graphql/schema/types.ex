@@ -20,6 +20,7 @@ defmodule WikisourceWeb.Schema.BookTypes do
 
     @desc "invalidate session"
     field :delete_session, :session do
+      @desc "session_id should also match that in the http authorization header"
       arg(:session_id, non_null(:string))
       resolve(&Resolvers.SessionResolver.delete/3)
     end
