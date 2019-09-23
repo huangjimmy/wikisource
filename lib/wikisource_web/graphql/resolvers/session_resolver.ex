@@ -13,10 +13,10 @@ defmodule WikisourceWeb.Resolvers.SessionResolver do
   end
 
   def create(_parent, args, _resolutions) do
+
     case args do
       %{:device_id => device_id, :device_type => device_type, :device_desc => device_desc} ->
         session_id = UUID.uuid1()
-        IO.inspect(session_id)
         try do
           case Repo.insert(%Session{
             session_id: session_id,
@@ -40,25 +40,22 @@ defmodule WikisourceWeb.Resolvers.SessionResolver do
     end
   end
 
-  def delete(_parent, args, %{context: %{session_id: context_session_id}} = _resolutions) do
-    case args do
-      %{:session_id => session_id} ->
-        if context_session_id == session_id do
-          case Repo.get_by(Session, session_id: session_id) do
-            nil -> {:error, @session_not_found}
-            session ->
-              Repo.update change(session, delete_time: DateTime.utc_now())
+  def delete(_parent, _args, %{context: %{session_id: session_id}} = _resolutions) do
+    case session_id do
+      nil -> {:error, @session_invalid_parameter}
+      "" -> {:error, @session_invalid_parameter}
+      _ ->
+        case Repo.get_by(Session, session_id: session_id) do
+          nil -> {:error, @session_not_found}
+          session ->
+            Repo.update change(session, delete_time: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second))
 
-              :mnesia.transaction fn ->
-                :mnesia.delete({Wikisource.SessionStore, session_id})
-              end
+            :mnesia.transaction fn ->
+              :mnesia.delete({Wikisource.SessionStore, session_id})
+            end
 
-              {:ok, %{session_id: ""}}
-          end
-        else
-          {:error, @session_invalid_parameter}
+            {:ok, %{session_id: ""}}
         end
-      _ ->  {:error, @session_not_found}
     end
   end
 

@@ -59,7 +59,7 @@ defmodule Wikisource.SessionStore do
         ])
 
       for sid <- old_sids, do: :mnesia.delete({table, sid})
-      IO.inspect(old_sids)
+
       from(s in Wikisource.Session, where: s.session_id in ^old_sids, update: [set: [delete_time: ^NaiveDateTime.utc_now()]])
       |> Wikisource.Repo.update_all([])
     end
