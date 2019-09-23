@@ -28,8 +28,8 @@ config :phoenix,
 
 config :wikisource,
   table: Wikisource.SessionStore,
-  max_age: 7200,
-  check_interval: 180
+  max_age: 7200, # session is valid for 7200 seconds since its last accessed
+  check_interval: 300
 
 config :libcluster,
   topologies: [

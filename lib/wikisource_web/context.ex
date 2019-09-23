@@ -15,7 +15,9 @@ defmodule WikisourceWeb.Context do
           case Jason.decode(conn.resp_body) do
             {:ok, %{"data" => %{"createSession" => %{"sessionId" => session_id} } } } ->
               IO.puts(conn.resp_body)
-              put_resp_cookie(conn, "session_id", session_id, httpOnly: true)
+              put_resp_cookie(conn, "session_id", session_id, httpOnly: true, max_age: 86400*3660)
+              # session_id is stored in httpOnly cookie, the cookie itself is valid for 10 years,
+              # but the session will expire after 7200 seconds from its last access
             _ -> conn
           end
         "{\"data\":{\"deleteSession\":{\"sessionId\":\"" <> _ ->

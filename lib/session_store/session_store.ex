@@ -104,7 +104,10 @@ defmodule Wikisource.SessionStore do
   def nodes do
     # IO.inspect(Process.info(self(), :current_stacktrace), label: "STACKTRACE")
     connected_nodes = :erlang.nodes(:connected)
-    [running_nodes: cluster_nodes] = Mnesiac.cluster_status()
+    cluster_nodes = case Mnesiac.cluster_status() |> Keyword.fetch(:running_nodes) do
+      {:ok, cluster_nodes} -> cluster_nodes
+      _ -> []
+    end
     current_node = node()
 
     need_connect =
