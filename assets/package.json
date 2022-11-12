@@ -30,6 +30,6 @@
     "sass": "^1.22.12",
     "acorn": "^7.0.0",
     "file-loader": "^4.2.0",
-    "webpack-cli": "^3.3.8"
+    "webpack-cli": "^3.3.12"
   }
 }
